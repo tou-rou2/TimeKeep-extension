@@ -1,0 +1,21 @@
+html {
+    width: 400px;
+    font-size: 20px;
+}
+
+.hours {
+    width: 40px;
+}
+
+.minutes {
+    width: 40px;
+}
+
+.urls {
+    width: 90%;
+}
+
+.url {
+    max-width: 320px;
+    word-wrap: break-word;
+}
