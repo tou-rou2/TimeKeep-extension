@@ -254,6 +254,11 @@ try {
             i.value %= 60;
         }
     }
+    additionalTime.onchange = () => {
+        if(additionalTime.value>30){
+            additionalTime.value = 30;
+        }
+    }
 } catch (e) {
     alert(e)
 }
