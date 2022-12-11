@@ -2,64 +2,68 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="popup.css">
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 
 <body>
-    <div>
-        <header>
-            <p>時刻設定変更</p>
-        </header>
-        <p>
-            <label>
-                開始時刻<br>
-                <input type="number" id="sHours" class="hours times">:<input type="number" id="sMinutes"
-                    class="minutes times">
-            </label>
-        </p>
-        <p>
-            <label>
-                終了時刻<br>
-                <input type="number" id="fHours" class="hours times">:<input type="number" id="fMinutes"
-                    class="minutes times">
-            </label>
-        </p>
-        <p>
-            <button id="change">変更</button>
-            <button id="tReset">リセット</button>
-        </p>
-    </div>
-    <hr>
-    <div>
-        <header>
-            <p>サイト設定変更</p>
-        </header>
-        <p>
-            <label>
-                ホワイトリスト<br>
-                <input type="url" id="addWhiteList" class="urls">
-                <button id="submitW">追加</button>
-                <button class="addCurPage">現在のページを追加</button>
-            </label>
-        <table id="whiteList">
-        </table>
-        </p>
-        <p>
-            <label>
-                ブラックリスト<br>
-                <input type="url" id="addBlackList" class="urls">
-                <button id="submitB">追加</button>
-                <button class="addCurPage">現在のページを追加</button>
-            </label>
-        <table id="blackList">
-        </table>
-        </p>
-        <p>
-            <button id="lReset">リセット</button>
-        </p>
-    </div>
-    <script src="popup.js"></script>
+	<div>
+		<header>
+			<p>時刻設定変更</p>
+		</header>
+		<p>
+			<label>
+				開始時刻<br>
+				<input type="number" id="sHours" class="hours times">:<input type="number" id="sMinutes"
+					class="minutes times">
+			</label>
+		</p>
+		<p>
+			<label>
+				終了時刻<br>
+				<input type="number" id="fHours" class="hours times">:<input type="number" id="fMinutes"
+					class="minutes times">
+			</label>
+		</p>
+		<p>
+			<button id="change">変更</button>
+			<button id="tReset">リセット</button>
+		</p>
+	</div>
+	<hr>
+	<div>
+		<header>
+			<p>サイト設定変更</p>
+		</header>
+		<p>
+			今開いているページを<input type="number" id="additionalTime" value=10 aria-valuemax="30">分使用可能にする<br>
+			<button id="addTime">開始</button>
+		</p>
+		<p>
+			<label>
+				ホワイトリスト<br>
+				<input type="url" id="addWhiteList" class="urls">
+				<button id="submitW">追加</button>
+				<button class="addCurPage">現在のページを追加</button>
+			</label>
+		<table id="whiteList">
+		</table>
+		</p>
+		<p>
+			<label>
+				ブラックリスト<br>
+				<input type="url" id="addBlackList" class="urls">
+				<button id="submitB">追加</button>
+				<button class="addCurPage">現在のページを追加</button>
+			</label>
+		<table id="blackList">
+		</table>
+		</p>
+		<p>
+			<button id="lReset">リセット</button>
+		</p>
+	</div>
+	<script src="popup.js"></script>
 </body>
 
 </html>

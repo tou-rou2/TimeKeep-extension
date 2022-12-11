@@ -19,3 +19,6 @@ html {
     max-width: 320px;
     word-wrap: break-word;
 }
+#additionalTime{
+    width: 30px;
+}
