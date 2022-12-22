@@ -27,7 +27,7 @@ try {
     setInterval(() => {
         const nowDate = new Date(),
             start = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), sTime.hours, sTime.minutes);
-        if (Math.abs(start.getTime() - nowDate.getTime()) <= 60000) {
+        if (start.getTime() - nowDate.getTime() <= 0) {
             chrome.storage.local.set({ "added": {} });
             console.log("ok!");
         }

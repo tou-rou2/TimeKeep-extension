@@ -2,7 +2,7 @@ try {
     let sTime, fTime, lists, added;
     const date = new Date(),
         url = location.href.split("://")[1];
-    chrome.storage.local.get(["sTime","fTime","lists","added"], value => {
+    chrome.storage.local.get(["sTime", "fTime", "lists", "added"], value => {
         if (value) {
             sTime = value.sTime;
             fTime = value.fTime;
@@ -14,12 +14,12 @@ try {
                 if (Object.keys(added).includes(url)) {
                     const end = new Date(added[url][0]).setMinutes(new Date(added[url][0]).getMinutes() + Number(added[url][1]));
                     if (end - date <= 0) {
-                        timeOver(lists, sTime, fTime, date);
+                        timeOver(lists, sTime, fTime, date, url);
                     } else {
                         limit(end, date, () => { timeOver(lists, sTime, fTime, date) });
                     }
                 } else {
-                    timeOver(lists, sTime, fTime, date);
+                    timeOver(lists, sTime, fTime, date, url);
                 }
             }
         } else {
@@ -29,7 +29,7 @@ try {
 } catch (e) {
     alert(e)
 }
-function timeOver(lists, sTime, fTime, date) {
+function timeOver(lists, sTime, fTime, date, url) {
     if (lists.blackList.some(e => {
         return url.startsWith(e);
     }) || ((sTime.hours < fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes))) || ((sTime.hours == fTime.hours) && (sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes() && date.getMinutes() <= fTime.minutes)) || ((sTime.hours > fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() - 24 < fTime.hours) || (sTime.hours < date.getHours() + 24 && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes)))) {
