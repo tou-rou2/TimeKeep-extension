@@ -24,12 +24,4 @@ try {
             chrome.storage.local.set({ "added": {} });
         }
     });
-    setInterval(() => {
-        const nowDate = new Date(),
-            start = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), sTime.hours, sTime.minutes);
-        if (start.getTime() - nowDate.getTime() <= 0) {
-            chrome.storage.local.set({ "added": {} });
-            console.log("ok!");
-        }
-    }, 60000)
 } catch (e) { console.log(e) }

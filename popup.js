@@ -191,11 +191,15 @@ try {
 
         chrome.tabs.query({ active: true, lastFocusedWindow: true }, tab => {
             const url = tab[0].url.split("://")[1],
-                nowDate = new Date();
-            if (added && !Object.keys(added).includes(url)) {
+                today = String(new Date().getFullYear()) + String(new Date().getMonth()) + String(new Date().getDay());
+            if(added || !Object.key(added).includes(today)){
+                added = {};
+                added[today] = [];
+            }
+            if (!Object.keys(added[today]).some(e => url.startsWith(e[0]))) {
                 const conf = confirm("変更をすると、現在見ているページがリロードされますがよろしいですか？");
                 if (conf) {
-                    added[url] = [nowDate.toString(), additionalTime.value];
+                    added[today][url]=[ new Date(),additionalTime.value];
                     chrome.storage.local.set({ "added": added }, () => {
                         chrome.tabs.reload(tab[0].id);
                         location.reload();

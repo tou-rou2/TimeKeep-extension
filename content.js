@@ -1,7 +1,8 @@
 try {
     let sTime, fTime, lists, added;
     const date = new Date(),
-        url = location.href.split("://")[1];
+        url = location.href.split("://")[1],
+        today =String(date.getFullYear())+String(date.getMonth())+String(date.getDay());
     chrome.storage.local.get(["sTime", "fTime", "lists", "added"], value => {
         if (value) {
             sTime = value.sTime;
@@ -11,8 +12,8 @@ try {
             if (lists.whiteList.every(e => {
                 return !url.startsWith(e);
             })) {
-                if (Object.keys(added).includes(url)) {
-                    const end = new Date(added[url][0]).setMinutes(new Date(added[url][0]).getMinutes() + Number(added[url][1]));
+                if (Object.keys(added[today]).some(e=>url.startsWith(e[0]))) {
+                    const end = new Date(added[today][url][0]).setMinutes(new Date(added[today][url][0]).getMinutes() + Number(added[today][url][1]));
                     if (end - date <= 0) {
                         timeOver(lists, sTime, fTime, date, url);
                     } else {
