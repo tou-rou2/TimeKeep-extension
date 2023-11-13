@@ -2,22 +2,23 @@ try {
     let sTime, fTime, lists, added;
     const date = new Date(),
         url = location.href.split("://")[1],
-        today =String(date.getFullYear())+String(date.getMonth())+String(date.getDay());
+        today = String(date.getFullYear()) + String(date.getMonth()) + String(date.getDate());
     chrome.storage.local.get(["sTime", "fTime", "lists", "added"], value => {
         if (value) {
             sTime = value.sTime;
             fTime = value.fTime;
             lists = value.lists;
             added = value.added;
+            console.log(added)
             if (lists.whiteList.every(e => {
                 return !url.startsWith(e);
             })) {
-                if (Object.keys(added[today]).some(e=>url.startsWith(e[0]))) {
+                if (Object.keys(added[today]).some(e => url.startsWith(e))) {
                     const end = new Date(added[today][url][0]).setMinutes(new Date(added[today][url][0]).getMinutes() + Number(added[today][url][1]));
                     if (end - date <= 0) {
                         timeOver(lists, sTime, fTime, date, url);
                     } else {
-                        limit(end, date, () => { timeOver(lists, sTime, fTime, date) });
+                        limit(end, date, () => { timeOver(lists, sTime, fTime, date, url) });
                     }
                 } else {
                     timeOver(lists, sTime, fTime, date, url);

@@ -3,7 +3,7 @@ try {
     const initial = {
         "hours": 0,
         "minutes": 0
-    };
+    },today = String(new Date().getFullYear()) + String(new Date().getMonth()) + String(new Date().getDate());
     chrome.storage.local.get(["sTime", "fTime", "lists", "added"], value => {
         sTime = value.sTime;
         fTime = value.fTime;
@@ -21,7 +21,9 @@ try {
             chrome.storage.local.set({ "lists": { "whiteList": [], "blackList": [] } });
         }
         if (!added) {
-            chrome.storage.local.set({ "added": {} });
+            added = {};
+            added[today] = {};
+            chrome.storage.local.set({ "added": added });
         }
     });
 } catch (e) { console.log(e) }

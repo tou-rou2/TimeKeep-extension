@@ -188,18 +188,20 @@ try {
         }
     }
     document.getElementById("addTime").onclick = () => {
-
         chrome.tabs.query({ active: true, lastFocusedWindow: true }, tab => {
             const url = tab[0].url.split("://")[1],
-                today = String(new Date().getFullYear()) + String(new Date().getMonth()) + String(new Date().getDay());
-            if(added || !Object.key(added).includes(today)){
+                today = String(new Date().getFullYear()) + String(new Date().getMonth()) + String(new Date().getDate());
+            alert(JSON.stringify(Object.keys(added).includes(today)))
+            if(!added || !Object.keys(added).includes(today)){
+                alert("")
                 added = {};
-                added[today] = [];
+                added[today] = {};
             }
-            if (!Object.keys(added[today]).some(e => url.startsWith(e[0]))) {
+            alert(JSON.stringify(added[today]))
+            if (!Object.keys(added[today]).some(e => url.startsWith(e))) {
                 const conf = confirm("変更をすると、現在見ているページがリロードされますがよろしいですか？");
                 if (conf) {
-                    added[today][url]=[ new Date(),additionalTime.value];
+                    added[today][url]=[ new Date().toString(),additionalTime.value];
                     chrome.storage.local.set({ "added": added }, () => {
                         chrome.tabs.reload(tab[0].id);
                         location.reload();
