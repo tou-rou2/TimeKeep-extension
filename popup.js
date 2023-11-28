@@ -1,5 +1,5 @@
 try {
-    let sTime, fTime, lists, keys, added, urls = [];
+    let sTime, fTime, lists, keys, added, isTimeOn, urls = [];
     const hours = document.getElementsByClassName("hours"),
         minutes = document.getElementsByClassName("minutes"),
         addCurPages = document.getElementsByClassName("addCurPage"),
@@ -29,11 +29,12 @@ try {
             }
         }
     }
-    chrome.storage.local.get(["sTime", "fTime", "lists", "added"], value => {
+    chrome.storage.local.get(["sTime", "fTime", "lists", "added", "isTimeOn"], value => {
         sTime = value.sTime;
         fTime = value.fTime;
         lists = value.lists;
         added = value.added;
+        isTimeOn = value.isTimeOn;
         keys = Object.keys(lists);
         keys.forEach(e => {
             urls = urls.concat(lists[e]);
@@ -42,6 +43,15 @@ try {
         document.getElementById("sMinutes").value = sTime.minutes;
         document.getElementById("fHours").value = fTime.hours;
         document.getElementById("fMinutes").value = fTime.minutes;
+        document.getElementById("switch").checked = isTimeOn;
+        if (!isTimeOn) {
+            for (let i of document.getElementById("time").getElementsByClassName("times")) {
+                i.disabled = !isTimeOn;
+            }
+            for (let i of document.getElementById("time").querySelectorAll("button")) {
+                i.disabled = !isTimeOn;
+            }
+        }
         for (i of keys) {
             initialization(i, lists);
         }
@@ -59,7 +69,9 @@ try {
                             chrome.storage.local.set({ "lists": lists }, () => {
                                 chrome.tabs.query({ url: "*://" + url + "/*" }, tabs => {
                                     for (let i of tabs) {
-                                        chrome.tabs.reload(i.id);
+                                        if (i.url.startsWith("http")) {
+                                            chrome.tabs.reload(i.id);
+                                        }
                                     }
                                     location.reload();
                                 });
@@ -128,7 +140,9 @@ try {
             });
             chrome.tabs.query({}, tabs => {
                 for (let i of tabs) {
-                    chrome.tabs.reload(i.id);
+                    if (i.url.startsWith("http")) {
+                        chrome.tabs.reload(i.id);
+                    }
                 }
                 location.reload();
             });
@@ -146,16 +160,18 @@ try {
                 sMinutes = Number(document.getElementById("sMinutes").value),
                 fHours = Number(document.getElementById("fHours").value),
                 fMinutes = Number(document.getElementById("fMinutes").value);
-            sTime.hours = sHours ? sHours : 0;
+            sTime.hours = sHours ? sHours : 23;
             sTime.minutes = sMinutes ? sMinutes : 0;
-            fTime.hours = fHours ? fHours : 0;
+            fTime.hours = fHours ? fHours : 6;
             fTime.minutes = fMinutes ? fMinutes : 0;
             chrome.storage.local.set({ "sTime": sTime });
             chrome.storage.local.set({ "fTime": fTime }, () => {
                 alert("変更されました。");
                 chrome.tabs.query({}, tabs => {
                     for (let i of tabs) {
-                        chrome.tabs.reload(i.id);
+                        if (i.url.startsWith("http")) {
+                            chrome.tabs.reload(i.id);
+                        }
                     }
                     location.reload();
                 });
@@ -175,7 +191,9 @@ try {
             }, () => {
                 chrome.tabs.query({}, tabs => {
                     for (let i of tabs) {
-                        chrome.tabs.reload(i.id);
+                        if (i.url.startsWith("http")) {
+                            chrome.tabs.reload(i.id);
+                        }
                     }
                     location.reload();
                 });
@@ -191,17 +209,14 @@ try {
         chrome.tabs.query({ active: true, lastFocusedWindow: true }, tab => {
             const url = tab[0].url.split("://")[1],
                 today = String(new Date().getFullYear()) + String(new Date().getMonth()) + String(new Date().getDate());
-            alert(JSON.stringify(Object.keys(added).includes(today)))
-            if(!added || !Object.keys(added).includes(today)){
-                alert("")
+            if (!added || !Object.keys(added).includes(today)) {
                 added = {};
                 added[today] = {};
             }
-            alert(JSON.stringify(added[today]))
-            if (!Object.keys(added[today]).some(e => url.startsWith(e))) {
+            if (!Object.keys(added[today]).some(e => { return url.startsWith(e) })) {
                 const conf = confirm("変更をすると、現在見ているページがリロードされますがよろしいですか？");
                 if (conf) {
-                    added[today][url]=[ new Date().toString(),additionalTime.value];
+                    added[today][url] = [new Date().toString(), additionalTime.value];
                     chrome.storage.local.set({ "added": added }, () => {
                         chrome.tabs.reload(tab[0].id);
                         location.reload();
@@ -216,6 +231,37 @@ try {
                 alert("延長済みです。");
             }
         });
+    }
+    document.getElementById("hReset").onclick = () => {
+        chrome.storage.local.clear();
+    }
+    document.getElementById("switch").onclick = () => {
+        const conf = confirm("変更をすると、全てのページがリロードがされますがよろしいですか？");
+        if (conf) {
+            isTimeOn = document.getElementById("switch").checked;
+            for (let i of document.getElementById("time").getElementsByClassName("times")) {
+                i.disabled = !isTimeOn;
+            }
+            for (let i of document.getElementById("time").querySelectorAll("button")) {
+                i.disabled = !isTimeOn;
+            }
+            chrome.storage.local.set({ "isTimeOn": isTimeOn }, () => {
+                alert("変更されました。");
+                chrome.tabs.query({}, tabs => {
+                    for (let i of tabs) {
+                        if (i.url.startsWith("http")) {
+                            chrome.tabs.reload(i.id);
+                        }
+                    }
+                    location.reload();
+                });
+            });
+        } else {
+            let content = document.createTextNode("変更がされませんでした。\nなにか問題がある場合はダイアログを許可してください。");
+            let note = document.createElement("p");
+            note.append(content);
+            document.body.prepend(note);
+        }
     }
     for (let i of document.getElementsByClassName("times")) {
         i.onkeydown = key => {
@@ -233,7 +279,7 @@ try {
     }
     for (let i = 0; i < addCurPages.length; i++) {
         addCurPages[i].onclick = () => {
-            const conf = confirm("変更をすると、全てのページがリロードがされますがよろしいですか？");
+            const conf = confirm("変更をすると、現在のページがリロードがされますがよろしいですか？");
             if (conf) {
                 chrome.tabs.query({ active: true, lastFocusedWindow: true }, tab => {
                     lists[keys[1 - i]].push(tab[0].url.split("://")[1]);

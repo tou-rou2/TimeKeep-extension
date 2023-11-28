@@ -7,10 +7,16 @@
 </head>
 
 <body>
-	<div>
+	<div id="time">
 		<header>
 			<p>時刻設定変更</p>
 		</header>
+		<p>
+			<label>
+				時刻設定の有効化<br>
+				<input type="checkbox" id="switch"></input>
+			</label>
+		</p>
 		<p>
 			<label>
 				開始時刻<br>
@@ -27,11 +33,11 @@
 		</p>
 		<p>
 			<button id="change">変更</button>
-			<button id="tReset">リセット</button>
+			<button id="tReset">時間リセット</button>
 		</p>
 	</div>
 	<hr>
-	<div>
+	<div id="site">
 		<header>
 			<p>サイト設定変更</p>
 		</header>
@@ -60,8 +66,12 @@
 		</table>
 		</p>
 		<p>
-			<button id="lReset">リセット</button>
+			<button id="lReset">リストリセット</button>
 		</p>
+	</div>
+	<hr>
+	<div>
+		<button id="hReset">ハードリセット</button>
 	</div>
 	<script src="popup.js"></script>
 </body>

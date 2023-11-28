@@ -3,17 +3,16 @@ try {
     const date = new Date(),
         url = location.href.split("://")[1],
         today = String(date.getFullYear()) + String(date.getMonth()) + String(date.getDate());
-    chrome.storage.local.get(["sTime", "fTime", "lists", "added"], value => {
+    chrome.storage.local.get(["sTime", "fTime", "lists", "added", "isTimeOn"], value => {
         if (value) {
             sTime = value.sTime;
             fTime = value.fTime;
             lists = value.lists;
             added = value.added;
-            console.log(added)
-            if (lists.whiteList.every(e => {
-                return !url.startsWith(e);
-            })) {
-                if (Object.keys(added[today]).some(e => url.startsWith(e))) {
+            isTimeOn = value.isTimeOn;
+            console.log(isTimeOn)
+            if (isTimeOn && lists.whiteList.every(e => { return !url.startsWith(e); })) {
+                if (added[today] && Object.keys(added[today]).some(e => { return url.startsWith(e) })) {
                     const end = new Date(added[today][url][0]).setMinutes(new Date(added[today][url][0]).getMinutes() + Number(added[today][url][1]));
                     if (end - date <= 0) {
                         timeOver(lists, sTime, fTime, date, url);
@@ -32,9 +31,7 @@ try {
     alert(e)
 }
 function timeOver(lists, sTime, fTime, date, url) {
-    if (lists.blackList.some(e => {
-        return url.startsWith(e);
-    }) || ((sTime.hours < fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes))) || ((sTime.hours == fTime.hours) && (sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes() && date.getMinutes() <= fTime.minutes)) || ((sTime.hours > fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() - 24 < fTime.hours) || (sTime.hours < date.getHours() + 24 && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes)))) {
+    if (lists.blackList.some(e => { return url.startsWith(e); }) || ((sTime.hours < fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes))) || ((sTime.hours == fTime.hours) && (sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes() && date.getMinutes() <= fTime.minutes)) || ((sTime.hours > fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() - 24 < fTime.hours) || (sTime.hours < date.getHours() + 24 && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes)))) {
         document.body = document.createElement("body");
     } else {
         const start = new Date(date.getFullYear(), date.getMonth(), (sTime.hours < date.getHours() || sTime.hours == date.getHours() && sTime.minutes < date.getMinutes() ? date.getDate() + 1 : date.getDate()), sTime.hours, sTime.minutes);
