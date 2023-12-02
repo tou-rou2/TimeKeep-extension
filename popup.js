@@ -10,7 +10,8 @@ try {
         },
         inputs = ["addBlackList", "addWhiteList"],
         buttons = ["submitB", "submitW"],
-        date = new Date();
+        date = new Date(),
+        isNum = value => typeof value === "number" && isFinite(value);
     function initialization(name, value) {
         if (value) {
             for (let i of value[name]) {
@@ -113,7 +114,7 @@ try {
                     }
                 }
             }
-        }
+        }/*
         if (((sTime.hours < fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes))) || ((sTime.hours == fTime.hours) && (sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes() && date.getMinutes() <= fTime.minutes)) || ((sTime.hours > fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() - 24 < fTime.hours) || (sTime.hours < date.getHours() + 24 && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes)))) {
             for (let i of document.querySelectorAll("input")) {
                 if (i.id !== "additionalTime") {
@@ -129,7 +130,7 @@ try {
             let content = document.createTextNode("制限時間中は設定の確認のみ可能です。\n変更は出来ません。");
             note.append(content);
             document.body.prepend(note);
-        }
+        }*/
     });
     document.getElementById("tReset").onclick = () => {
         const conf = confirm("変更をすると、全てのページがリロードがされますがよろしいですか？");
@@ -160,10 +161,10 @@ try {
                 sMinutes = Number(document.getElementById("sMinutes").value),
                 fHours = Number(document.getElementById("fHours").value),
                 fMinutes = Number(document.getElementById("fMinutes").value);
-            sTime.hours = sHours ? sHours : 23;
-            sTime.minutes = sMinutes ? sMinutes : 0;
-            fTime.hours = fHours ? fHours : 6;
-            fTime.minutes = fMinutes ? fMinutes : 0;
+            sTime.hours = isNum(sHours) ? sHours : 0;
+            sTime.minutes = isNum(sMinutes) ? sMinutes : 0;
+            fTime.hours = isNum(fHours) ? fHours : 0;
+            fTime.minutes = isNum(fMinutes) ? fMinutes : 0;
             chrome.storage.local.set({ "sTime": sTime });
             chrome.storage.local.set({ "fTime": fTime }, () => {
                 alert("変更されました。");
@@ -261,6 +262,7 @@ try {
             let note = document.createElement("p");
             note.append(content);
             document.body.prepend(note);
+            location.reload();
         }
     }
     for (let i of document.getElementsByClassName("times")) {
