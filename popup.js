@@ -114,7 +114,7 @@ try {
                     }
                 }
             }
-        }/*
+        }
         if (((sTime.hours < fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes))) || ((sTime.hours == fTime.hours) && (sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes() && date.getMinutes() <= fTime.minutes)) || ((sTime.hours > fTime.hours) && ((sTime.hours == date.getHours() && sTime.minutes <= date.getMinutes()) || (sTime.hours < date.getHours() && date.getHours() - 24 < fTime.hours) || (sTime.hours < date.getHours() + 24 && date.getHours() < fTime.hours) || (fTime.hours == date.getHours() && date.getMinutes() <= fTime.minutes)))) {
             for (let i of document.querySelectorAll("input")) {
                 if (i.id !== "additionalTime") {
@@ -130,7 +130,7 @@ try {
             let content = document.createTextNode("制限時間中は設定の確認のみ可能です。\n変更は出来ません。");
             note.append(content);
             document.body.prepend(note);
-        }*/
+        }
     });
     document.getElementById("tReset").onclick = () => {
         const conf = confirm("変更をすると、全てのページがリロードがされますがよろしいですか？");
