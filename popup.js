@@ -217,7 +217,7 @@ try {
             if (!Object.keys(added[today]).some(e => { return url.startsWith(e) })) {
                 const conf = confirm("変更をすると、現在見ているページがリロードされますがよろしいですか？");
                 if (conf) {
-                    added[today][url] = [new Date().toString(), additionalTime.value];
+                    added[today][url.split("/")[0]] = [new Date().toString(), additionalTime.value];
                     chrome.storage.local.set({ "added": added }, () => {
                         chrome.tabs.reload(tab[0].id);
                         location.reload();
