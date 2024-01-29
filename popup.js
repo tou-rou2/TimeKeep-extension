@@ -3,6 +3,7 @@ try {
     const hours = document.getElementsByClassName("hours"),
         minutes = document.getElementsByClassName("minutes"),
         addCurPages = document.getElementsByClassName("addCurPage"),
+        addCurDomeins = document.getElementsByClassName("addCurDomein"),
         additionalTime = document.getElementById("additionalTime"),
         initial = {
             "hours": 0,
@@ -97,12 +98,12 @@ try {
                 dels[i].onclick = () => {
                     const conf = confirm("変更をすると、該当する全てのページがリロードがされますがよろしいですか？");
                     if (conf) {
-                        lists[n].splice(i, 1);
-                        chrome.storage.local.set({ "lists": lists }, () => {
-                            chrome.tabs.query({ url: "*://" + urls[i] + "/*" }, tabs => {
-                                for (let j of tabs) {
-                                    chrome.tabs.reload(j.id);
-                                }
+                        chrome.tabs.query({ url: "*://" + lists[n][i] + "/*" }, tabs => {
+                            for (let j of tabs) {
+                                chrome.tabs.reload(j.id);
+                            }
+                            lists[n].splice(i, 1);
+                            chrome.storage.local.set({ "lists": lists }, () => {
                                 location.reload();
                             });
                         });
@@ -290,6 +291,32 @@ try {
                         location.reload();
                     });
                 });
+            } else {
+                let content = document.createTextNode("変更がされませんでした。\nなにか問題がある場合はダイアログを許可してください。");
+                let note = document.createElement("p");
+                note.append(content);
+                document.body.prepend(note);
+            }
+        }
+    }
+    for (let i = 0; i < addCurDomeins.length; i++) {
+        addCurDomeins[i].onclick = () => {
+            const conf = confirm("変更をすると、現在のページがリロードがされますがよろしいですか？");
+            if (conf) {
+                chrome.tabs.query({ active: true, lastFocusedWindow: true }, tab => {
+                    let url = tab[0].url.split("://")[1].split("/")[0];
+                    lists[keys[1 - i]].push(url);
+                    chrome.storage.local.set({ "lists": lists }, () => {
+                        chrome.tabs.query({ url: "*://" + url + "/*" }, tabs => {
+                            for (let i of tabs) {
+                                if (i.url.startsWith("http")) {
+                                    chrome.tabs.reload(i.id);
+                                }
+                            }
+                            location.reload();
+                        });
+                    })
+                })
             } else {
                 let content = document.createTextNode("変更がされませんでした。\nなにか問題がある場合はダイアログを許可してください。");
                 let note = document.createElement("p");
